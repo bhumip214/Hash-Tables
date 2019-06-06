@@ -129,6 +129,26 @@ void hash_table_insert(HashTable *ht, char *key, char *value)
  */
 void hash_table_remove(HashTable *ht, char *key)
 {
+  int index = hash(key, ht->capacity);
+  LinkedPair *current_pair = ht->storage[index];
+  LinkedPair *last_pair = NULL;
+
+  while (current_pair != NULL && strcmp(current_pair->key, key) != 0)
+  {
+    last_pair = current_pair;
+    current_pair = current_pair->next;
+  }
+
+  if (last_pair != NULL)
+  {
+    last_pair->next = current_pair->next;
+  }
+  else
+  {
+    ht->storage[index] = current_pair->next;
+  }
+  destroy_pair(current_pair);
+  current_pair = NULL;
 }
 
 /*
