@@ -209,7 +209,14 @@ void destroy_hash_table(HashTable *ht)
  */
 HashTable *hash_table_resize(HashTable *ht)
 {
-  HashTable *new_ht;
+  HashTable *new_ht = create_hash_table(ht->capacity * 2);
+
+  for (int i = 0; i < ht->capacity; i++)
+  {
+    new_ht->storage[i] = ht->storage[i];
+  }
+
+  free(ht->storage);
 
   return new_ht;
 }
@@ -227,11 +234,11 @@ int main(void)
   printf("%s", hash_table_retrieve(ht, "line_2"));
   printf("%s", hash_table_retrieve(ht, "line_3"));
 
-  // int old_capacity = ht->capacity;
-  // ht = hash_table_resize(ht);
-  // int new_capacity = ht->capacity;
+  int old_capacity = ht->capacity;
+  ht = hash_table_resize(ht);
+  int new_capacity = ht->capacity;
 
-  // printf("\nResizing hash table from %d to %d.\n", old_capacity, new_capacity);
+  printf("\nResizing hash table from %d to %d.\n", old_capacity, new_capacity);
 
   destroy_hash_table(ht);
 
