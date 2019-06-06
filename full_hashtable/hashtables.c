@@ -213,10 +213,18 @@ HashTable *hash_table_resize(HashTable *ht)
 
   for (int i = 0; i < ht->capacity; i++)
   {
-    new_ht->storage[i] = ht->storage[i];
-  }
+    if (ht->storage[i] != NULL)
+    {
+      hash_table_insert(new_ht, ht->storage[i]->key, ht->storage[i]->value);
 
-  free(ht->storage);
+      while (ht->storage[i]->next != NULL)
+      {
+        hash_table_insert(new_ht, ht->storage[i]->next->key, ht->storage[i]->next->value);
+        ht->storage[i] = ht->storage[i]->next;
+      }
+    }
+  }
+  destroy_hash_table(ht);
 
   return new_ht;
 }
