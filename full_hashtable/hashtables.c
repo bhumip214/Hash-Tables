@@ -101,22 +101,22 @@ void hash_table_insert(HashTable *ht, char *key, char *value)
   LinkedPair *current_pair = ht->storage[index];
   LinkedPair *last_pair;
 
-  while (current_pair != NULL)
+  while (current_pair != NULL && strcmp(current_pair->key, key) != 0)
   {
-    if (strcmp(current_pair->key, key) != 0)
-    {
-      last_pair = current_pair;
-      current_pair = last_pair->next;
-    }
-    else
-    {
-      current_pair->value = value;
-    }
+    last_pair = current_pair;
+    current_pair = last_pair->next;
   }
 
-  LinkedPair *new_pair = create_pair(key, value);
-  new_pair->next = ht->storage[index];
-  ht->storage[index] = new_pair;
+  if (current_pair != NULL)
+  {
+    current_pair->value = value;
+  }
+  else
+  {
+    LinkedPair *new_pair = create_pair(key, value);
+    new_pair->next = ht->storage[index];
+    ht->storage[index] = new_pair;
+  }
 }
 
 /*
@@ -145,19 +145,19 @@ char *hash_table_retrieve(HashTable *ht, char *key)
   LinkedPair *current_pair = ht->storage[index];
   LinkedPair *last_pair;
 
-  while (current_pair != NULL)
+  while (current_pair != NULL && strcmp(current_pair->key, key) != 0)
   {
-    if (strcmp(current_pair->key, key) != 0)
-    {
-      last_pair = current_pair;
-      current_pair = last_pair->next;
-    }
-    else
-    {
-      return current_pair->value;
-    }
+    last_pair = current_pair;
+    current_pair = last_pair->next;
   }
-  return NULL;
+  if (current_pair != NULL)
+  {
+    return current_pair->value;
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 /*
